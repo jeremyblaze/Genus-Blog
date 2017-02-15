@@ -9,7 +9,7 @@
     
     <?php foreach ( $posts as $post ): ?>
         <article>
-            <h2><a href="/<?php echo $post["slug"]; ?>"><?php echo $post["title"]; ?></a></h2>
+            <h2><a href="<?php echo $post["permalink"]; ?>"><?php echo $post["title"]; ?></a></h2>
             <h5><?php echo $post["date"]; ?></h5>
             <?php echo $post["content"]; ?>
         </article>
