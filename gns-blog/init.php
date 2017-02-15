@@ -28,7 +28,7 @@
     
     date_default_timezone_set('Australia/Melbourne');
 
-    function gnsblog($pageNum) {
+    function gnsblog($pageNum = 1) {
         
         $data = array();
             
@@ -37,18 +37,22 @@
             $postList = gnsblog_postList();
                 
         // Limit results
-    
-            global $postsPerPage;
         
-            $postCount = count($postList);
-            $postOffset = ($pageNum - 1) * $postsPerPage;
+            if ( $pageNum != 0 ) {
+    
+                global $postsPerPage;
             
-            $postList = array_slice($postList, $postOffset, $postsPerPage, true);
-            $cutPostCount = count($postList);
-            
-            if ( $cutPostCount == 0 ) {
-                http_response_code(404);
-                die();
+                $postCount = count($postList);
+                $postOffset = ($pageNum - 1) * $postsPerPage;
+                
+                $postList = array_slice($postList, $postOffset, $postsPerPage, true);
+                $cutPostCount = count($postList);
+                
+                if ( $cutPostCount == 0 ) {
+                    http_response_code(404);
+                    die();
+                }
+                
             }
             
         // Pagination stuff
@@ -79,6 +83,8 @@
     
     function gnsblog_post($path) {
     
+        global $blogPath;
+    
         $postRaw = file_get_contents($path."/post.md");
         
         // Extract info
@@ -99,15 +105,14 @@
             
                 $post = spyc_load($optionsRaw);
                 
-                $post["date_raw"] = $date;
-                $post["date"] = $post["date_raw"];
-                
+                $post["date"] = $date;
                 $now = date("Y-m-d");
-                if ( $post["date_raw"] > $now ) {
+                if ( $post["date"] > $now ) {
                     return null;
                 }
                 
                 $post["slug"] = $slug;
+                $post["permalink"] = $blogPath."/".$slug;
             
         // Extract content
         
@@ -195,7 +200,7 @@
                     echo '<item>';
                         echo '<title>'.$post["title"].'</title>';
                         echo '<description>'.$post["description"].'</description>';
-                        echo '<link>'.$blogPath.'/'.$post["slug"].'</link>';
+                        echo '<link>'.$post["permalink"].'</link>';
                         echo '<pubDate>'.date("D, d M Y H:i:s O", strtotime($post["date"])).'</pubDate>';
                     echo '</item>';
                 }

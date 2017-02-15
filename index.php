@@ -23,8 +23,19 @@
         
     } else if ( $url[0] == "feed" ) {
         
-        $posts = gnsblog(1);
+        $posts = gnsblog(0);
         echo gnsblog_rss($posts);
+        
+    } else if ( $url[0] == "json") {
+        
+        $posts = gnsblog(0);
+        
+        foreach ( $posts as $post ) {
+            unset($post["content"]);
+            $postJson[] = $post;
+        }
+        
+        echo json_encode($postJson);
         
     } else {
         
