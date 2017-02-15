@@ -13,7 +13,13 @@
     
     /* Options */
     
+        $blogPath = 'http://genus-blog:8888';
         $postsPerPage = 2;
+        
+        $rssInfo["title"] = "My Genus Blog";
+        $rssInfo["link"] = "http://myblog.com";
+        $rssInfo["description"] = "This is a brief description of what the blog is about";
+        $rssInfo["copyright"] = "Copyright " . date("Y") . " Blog Owner";
         
     /* End options */
 
@@ -166,6 +172,36 @@
         usort($postList, 'sortByDate');
         
         return $postList;
+        
+    }
+    
+    function gnsblog_rss($posts) {
+        
+        global $rssInfo;
+        global $blogPath;
+        
+        header("Content-Type: application/rss+xml; charset=UTF-8");
+        
+        echo '<?xml version="1.0" encoding="UTF-8"?>';
+        echo '<rss version="2.0">';
+            echo '<channel>';
+                echo '<title>'.$rssInfo["title"].'</title>';
+                echo '<link>'.$rssInfo["link"].'</link>';
+                echo '<description>'.$rssInfo["description"].'</description>';
+                echo '<language>en-us</language>';
+                echo '<copyright>'.$rssInfo["copyright"].'</copyright>';
+                
+                foreach ( $posts as $post ) {
+                    echo '<item>';
+                        echo '<title>'.$post["title"].'</title>';
+                        echo '<description>'.$post["description"].'</description>';
+                        echo '<link>'.$blogPath.'/'.$post["slug"].'</link>';
+                        echo '<pubDate>'.date("D, d M Y H:i:s O", strtotime($post["date"])).'</pubDate>';
+                    echo '</item>';
+                }
+                
+            echo '</channel>';
+        echo '</rss>';
         
     }
     

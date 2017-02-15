@@ -21,6 +21,11 @@
         $posts = gnsblog($pagenum);
         include_once("views/index.php");
         
+    } else if ( $url[0] == "feed" ) {
+        
+        $posts = gnsblog(1);
+        echo gnsblog_rss($posts);
+        
     } else {
         
         $slug = substr($_SERVER["QUERY_STRING"], 4);
