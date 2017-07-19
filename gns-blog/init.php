@@ -125,6 +125,13 @@
             $content = new Parsedown();
             $post["content"] = $content->text($contentRaw);
             
+        // Fix image sources
+        
+            $imgPrefix = '<img src="/posts/'.$post["date"].'_'.$post["slug"].'/';
+        
+            $post["content"] = str_replace('<img src="', $imgPrefix, $post["content"]);
+            $post["content"] = str_replace("<img src='", $imgPrefix, $post["content"]);
+            
         // Return the post as an array
         
             return $post;
