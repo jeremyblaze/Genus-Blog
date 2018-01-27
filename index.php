@@ -39,7 +39,23 @@
         
     } else {
         
-        $slug = substr($_SERVER["QUERY_STRING"], 4);
+        if ( strpos($_SERVER["QUERY_STRING"], '&') !== false ) {
+
+            $slug = substr($_SERVER["QUERY_STRING"], 0, strpos($_SERVER["QUERY_STRING"], "&"));
+
+        } else if ( strpos($_SERVER["QUERY_STRING"], '?') !== false ) {
+
+            $slug = substr($_SERVER["QUERY_STRING"], 0, strpos($_SERVER["QUERY_STRING"], "?"));
+
+        } else {
+
+            $slug = $_SERVER['QUERY_STRING'];
+
+        }
+
+        $slug = str_replace("/", "", $slug);
+        
+        $slug = substr($slug, 4);
         $exists = gnsblog_findPost($slug);
         
         if ( $exists == false ) {
